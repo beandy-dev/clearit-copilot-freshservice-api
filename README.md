@@ -88,6 +88,8 @@ fdk -u run --app-dir .
 
 O administrador configura durante a instalação do app. Pode apontar para qualquer instância do backend (produção, staging, localhost via ngrok).
 
+> **Nota:** O backend em `clearit-copilot.onrender.com` está temporariamente disponível para testes e avaliação da banca do programa Pulse Mais 2026. Enquanto estiver ativo, o widget funciona sem configuração adicional. Quando for desativado, será necessário realizar o deploy de uma instância própria do backend (ver [clearit-copilot-backend](https://github.com/beandy-dev/clearit-copilot-backend)) e atualizar a `backend_url` com a nova URL.
+
 ---
 
 ## Estrutura

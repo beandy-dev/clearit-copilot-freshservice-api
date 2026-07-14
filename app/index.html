@@ -446,5 +446,12 @@
       document.getElementById('result').style.display = 'none';
     }
   </script>
+  <div style="margin-top:16px;padding-top:12px;border-top:1px solid #e2e8f0;text-align:center;">
+    <a href="" id="manual-link" target="_blank" style="font-size:10px;color:#64748b;text-decoration:none;">📖 Manual do Sistema</a>
+  </div>
+  <script>
+    // Link do manual aponta pro backend
+    document.getElementById('manual-link').href = BACKEND_URL + '/manual.html';
+  </script>
 </body>
 </html>
