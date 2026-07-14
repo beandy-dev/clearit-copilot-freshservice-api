@@ -179,15 +179,7 @@
         html += `<p style="font-size:9px;color:#94a3b8;margin-top:6px;font-style:italic;">Referências sugeridas pela IA — datas aproximadas</p></div>`;
       }
 
-      // Botões: Regerar + Buscar na web
-      html += `
-        <div style="display:flex;gap:8px;margin-top:12px;">
-          <button class="btn" onclick="regenerate()" style="flex:1;background:#1e293b;">🔄 Regerar</button>
-          <button class="btn" id="web-search-btn" onclick="searchWeb()" style="flex:1;background:#1e293b;">🌐 Buscar na web</button>
-        </div>
-        <div id="web-results" style="display:none;"></div>
-      `;
-
+      // Botões de feedback (acima de regerar/web)
       html += `
         <div class="feedback">
           <p>Útil para você?</p>
@@ -197,6 +189,15 @@
             <button class="fb-btn" onclick="feedback(this,'rejeitado')">👎 Não</button>
           </div>
         </div>
+      `;
+
+      // Botões: Regerar + Buscar na web
+      html += `
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button class="btn" onclick="regenerate()" style="flex:1;background:#1e293b;">🔄 Regerar</button>
+          <button class="btn" id="web-search-btn" onclick="searchWeb()" style="flex:1;background:#1e293b;">🌐 Buscar na web</button>
+        </div>
+        <div id="web-results" style="display:none;"></div>
       `;
 
       html += `
