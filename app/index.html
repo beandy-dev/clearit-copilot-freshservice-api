@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClearIT Copilot</title>
+  <script src="https://static.freshdev.io/fdk/2.0/assets/fresh_client.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #1e293b; padding: 16px; background: #f8fafc; }
+    
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .header h1 { font-size: 14px; font-weight: 700; color: #1e40af; }
+    .header h1 i { margin-right: 6px; }
+    .badge { background: #dbeafe; color: #1d4ed8; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; }
+    
+    .input-section label { font-size: 11px; font-weight: 600; color: #475569; display: block; margin-bottom: 6px; }
+    textarea { width: 100%; min-height: 70px; padding: 10px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 12px; font-family: inherit; resize: vertical; outline: none; line-height: 1.5; }
+    textarea:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.1); }
+    
+    .btn { width: 100%; padding: 10px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    .loading { text-align: center; padding: 20px 0; color: #64748b; font-size: 12px; }
+    .loading .dots span { animation: blink 1.2s infinite; }
+    .loading .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink { 0%,80%,100%{opacity:0.3} 40%{opacity:1} }
+    
+    .result { margin-top: 12px; }
+    .section { margin-bottom: 12px; }
+    .section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #1d4ed8; margin-bottom: 4px; }
+    .section p { line-height: 1.6; color: #334155; }
+    .section ol { padding-left: 16px; line-height: 1.8; color: #334155; }
+    
+    .source { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 8px 10px; font-size: 11px; color: #1e40af; margin-top: 4px; }
+    .confidence { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+    .conf-bar { flex: 1; height: 5px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+    .conf-fill { height: 100%; background: #22c55e; border-radius: 3px; transition: width 0.8s; }
+    .conf-label { font-size: 11px; font-weight: 700; color: #16a34a; }
+    
+    .feedback { margin-top: 14px; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+    .feedback p { font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 8px; }
+    .feedback-btns { display: flex; gap: 6px; }
+    .fb-btn { flex: 1; padding: 8px 4px; border: 1px solid #e2e8f0; border-radius: 6px; background: white; font-size: 10px; cursor: pointer; text-align: center; font-weight: 600; }
+    .fb-btn:hover { background: #f8fafc; }
+    .fb-btn.done { background: #f0fdf4; border-color: #86efac; color: #15803d; }
+    .fb-confirm { color: #16a34a; font-size: 12px; font-weight: 700; margin-top: 8px; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    .edit-area { margin-top: 10px; animation: fadeIn 0.3s ease; }
+    .edit-area textarea { min-height: 60px; font-size: 11px; }
+    .edit-area button { width: 100%; padding: 8px; background: #16a34a; color: white; border: none; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 6px; }
+    .edit-area button:hover { opacity: 0.9; }
+    .edit-area button:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    .chat-section { margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+    .chat-msg { padding: 6px 10px; border-radius: 8px; margin-bottom: 4px; font-size: 11px; line-height: 1.4; }
+    .chat-msg.user { background: #eff6ff; color: #1e40af; text-align: right; }
+    .chat-msg.bot { background: #f1f5f9; color: #334155; }
+    .chat-row { display: flex; gap: 4px; margin-top: 6px; }
+    .chat-row input { flex: 1; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 11px; outline: none; }
+    .chat-row button { padding: 8px 12px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
+    
+    .error { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 8px; border-radius: 6px; font-size: 11px; margin-top: 8px; }
+    .hint { font-size: 10px; color: #94a3b8; margin-top: 6px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1><i>🤖</i> ClearIT Copilot</h1>
+    <span class="badge">AI</span>
+  </div>
+
+  <div id="input-section" class="input-section">
+    <label>Descreva o problema ou sintoma:</label>
+    <textarea id="query-input" placeholder="Cole a descrição do chamado ou descreva com suas palavras..."></textarea>
+    <button class="btn" id="analyze-btn" onclick="analyze()">🔍 Buscar Diagnóstico</button>
+    <p class="hint">Busca em tickets históricos + KBs via IA</p>
+  </div>
+
+  <div id="loading" class="loading" style="display:none;">
+    <p>Analisando<span class="dots"><span>.</span><span>.</span><span>.</span></span></p>
+  </div>
+
+  <div id="result" class="result" style="display:none;"></div>
+
+  <script>
+    // Config - URL do backend (carregada via iparams do FreshService)
+    let BACKEND_URL = 'https://clearit-copilot.onrender.com';
+    
+    let ticketData = null;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.app) {
+        app.initialized().then(function(client) {
+          // Carregar URL do backend via installation parameters
+          client.iparams.get("backend_url").then(function(data) {
+            BACKEND_URL = data.backend_url;
+          }).catch(function() {
+            // Mantém URL padrão de produção
+          });
+          
+          // Pegar dados do ticket
+          client.data.get("ticket").then(function(data) {
+            ticketData = data.ticket;
+            document.getElementById('query-input').value = ticketData.description_text || ticketData.subject || '';
+          });
+        });
+      }
+    });
+
+    async function analyze() {
+      const query = document.getElementById('query-input').value.trim();
+      if (!query) return;
+
+      document.getElementById('input-section').style.display = 'none';
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('result').style.display = 'none';
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/analyze`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ticketId: ticketData ? ticketData.id : null,
+            subject: ticketData ? ticketData.subject : '',
+            description: query
+          })
+        });
+
+        const data = await res.json();
+        document.getElementById('loading').style.display = 'none';
+        showResult(data, query);
+      } catch (e) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('result').innerHTML = `
+          <div class="error">❌ Não foi possível conectar ao backend.<br>Verifique se o servidor está rodando em ${BACKEND_URL}</div>
+          <button class="btn" onclick="reset()" style="margin-top:8px;">← Tentar novamente</button>
+        `;
+      }
+    }
+
+    function showResult(data, query) {
+      const resultDiv = document.getElementById('result');
+      resultDiv.style.display = 'block';
+
+      const isVague = data.isVague;
+      const confidence = data.sources && data.sources.length > 0 ? data.sources[0].similarity : 60;
+
+      let html = '';
+
+      if (isVague) {
+        html += `<div class="section"><div class="section-title">⚠️ Troubleshooting</div><p>${data.diagnosis}</p></div>`;
+        html += `<div class="section"><div class="section-title">Passos sugeridos</div><ol>${data.actions.map(a => `<li>${a}</li>`).join('')}</ol></div>`;
+      } else {
+        html += `<div class="section"><div class="section-title">🔍 Diagnóstico</div><p>${data.diagnosis}</p></div>`;
+        html += `<div class="section"><div class="section-title">🔧 Ações</div><ol>${data.actions.map(a => `<li>${a}</li>`).join('')}</ol></div>`;
+      }
+
+      if (data.sources && data.sources.length > 0) {
+        html += `<div class="section"><div class="section-title">📚 Fontes</div>`;
+        data.sources.forEach(s => {
+          html += `<div class="source">${s.type === 'KB' ? '📘' : '🎫'} ${s.title} (${s.similarity}%)</div>`;
+        });
+        html += `</div>`;
+      }
+
+      html += `<div class="confidence"><div class="conf-bar"><div class="conf-fill" style="width:${confidence}%"></div></div><span class="conf-label">${confidence}%</span></div>`;
+
+      html += `
+        <div class="feedback">
+          <p>Útil para você?</p>
+          <div class="feedback-btns">
+            <button class="fb-btn" onclick="feedback(this,'aceito')">👍 Útil</button>
+            <button class="fb-btn" onclick="feedback(this,'parcial')">✏️ Parcial</button>
+            <button class="fb-btn" onclick="feedback(this,'rejeitado')">👎 Não</button>
+          </div>
+        </div>
+      `;
+
+      html += `
+        <div class="chat-section">
+          <div id="chat-msgs"></div>
+          <div class="chat-row">
+            <input type="text" id="chat-input" placeholder="Pergunte mais..." onkeydown="if(event.key==='Enter')chat()">
+            <button onclick="chat()">→</button>
+          </div>
+        </div>
+      `;
+
+      html += `<button class="btn" onclick="reset()" style="margin-top:12px;background:#64748b;">← Nova consulta</button>`;
+
+      resultDiv.innerHTML = html;
+      window._lastData = data;
+      window._lastQuery = query;
+    }
+
+    async function feedback(btn, type) {
+      // Visual: marcar botão selecionado
+      document.querySelectorAll('.fb-btn').forEach(b => {
+        b.classList.remove('done');
+        b.disabled = true;
+      });
+      btn.classList.add('done');
+      btn.textContent = '⏳ Enviando...';
+
+      // Remover confirmação anterior e edit-area anterior
+      const feedbackDiv = btn.closest('.feedback');
+      const oldConfirm = feedbackDiv.querySelector('.fb-confirm');
+      if (oldConfirm) oldConfirm.remove();
+      const oldEdit = feedbackDiv.querySelector('.edit-area');
+      if (oldEdit) oldEdit.remove();
+
+      const payload = {
+        ticketId: ticketData ? ticketData.id : null,
+        query: window._lastQuery || '',
+        diagnosis: window._lastData ? window._lastData.diagnosis : '',
+        sources: window._lastData ? window._lastData.sources : [],
+        action: type
+      };
+
+      // Tentar até 2x (Render pode estar dormindo no cold start)
+      let success = false;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const res = await fetch(`${BACKEND_URL}/api/feedback`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            success = true;
+            break;
+          } else {
+            const err = await res.json().catch(() => ({}));
+            if (attempt === 1) {
+              btn.textContent = '⚠️ Erro: ' + (err.error || res.status);
+            }
+          }
+        } catch (e) {
+          if (attempt === 0) {
+            btn.textContent = '⏳ Reconectando...';
+            await new Promise(r => setTimeout(r, 2000));
+          } else {
+            btn.textContent = '⚠️ Servidor indisponível';
+          }
+        }
+      }
+
+      if (success) {
+        // Confirmação visual clara
+        btn.textContent = type === 'aceito' ? '👍 Útil' : type === 'parcial' ? '✏️ Parcial' : '👎 Não';
+        btn.classList.add('done');
+        const confirmEl = document.createElement('div');
+        confirmEl.className = 'fb-confirm';
+        confirmEl.textContent = '✅ Registrado!';
+        feedbackDiv.appendChild(confirmEl);
+
+        // Se 'parcial', mostrar textarea para editar a resposta
+        if (type === 'parcial') {
+          const editArea = document.createElement('div');
+          editArea.className = 'edit-area';
+          editArea.innerHTML = `
+            <textarea id="edit-response" placeholder="Descreva o que mudaria na resposta..."></textarea>
+            <button id="send-edit-btn" onclick="sendEdit()">📝 Enviar edição</button>
+          `;
+          feedbackDiv.appendChild(editArea);
+        }
+      }
+
+      // Reabilitar botões após 3s (exceto o selecionado)
+      setTimeout(() => {
+        document.querySelectorAll('.fb-btn').forEach(b => {
+          if (!b.classList.contains('done')) {
+            b.disabled = false;
+          }
+        });
+      }, 3000);
+    }
+
+    async function sendEdit() {
+      const textarea = document.getElementById('edit-response');
+      const editText = textarea ? textarea.value.trim() : '';
+      if (!editText) return;
+
+      const sendBtn = document.getElementById('send-edit-btn');
+      sendBtn.disabled = true;
+      sendBtn.textContent = '⏳ Enviando...';
+
+      const payload = {
+        ticketId: ticketData ? ticketData.id : null,
+        query: window._lastQuery || '',
+        diagnosis: window._lastData ? window._lastData.diagnosis : '',
+        sources: window._lastData ? window._lastData.sources : [],
+        action: 'parcial',
+        editedResponse: editText
+      };
+
+      // Retry 2x para cold start do Render
+      let success = false;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const res = await fetch(`${BACKEND_URL}/api/feedback`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            success = true;
+            break;
+          }
+        } catch (e) {
+          if (attempt === 0) {
+            sendBtn.textContent = '⏳ Reconectando...';
+            await new Promise(r => setTimeout(r, 2000));
+          }
+        }
+      }
+
+      if (success) {
+        sendBtn.textContent = '✅ Edição enviada!';
+        sendBtn.style.background = '#16a34a';
+        textarea.disabled = true;
+      } else {
+        sendBtn.textContent = '⚠️ Erro ao enviar';
+        sendBtn.disabled = false;
+      }
+    }
+
+    async function chat() {
+      const input = document.getElementById('chat-input');
+      const q = input.value.trim();
+      if (!q) return;
+
+      const msgs = document.getElementById('chat-msgs');
+      msgs.innerHTML += `<div class="chat-msg user">${q}</div>`;
+      input.value = '';
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            queryText: q,
+            ticketDesc: window._lastQuery || '',
+            diagnosis: window._lastData ? window._lastData.diagnosis : '',
+            actions: window._lastData ? window._lastData.actions : []
+          })
+        });
+        const data = await res.json();
+        msgs.innerHTML += `<div class="chat-msg bot">${(data.reply || data.error || '').replace(/\n/g,'<br>')}</div>`;
+      } catch (e) {
+        msgs.innerHTML += `<div class="chat-msg bot">Erro ao conectar com o backend.</div>`;
+      }
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function reset() {
+      document.getElementById('input-section').style.display = 'block';
+      document.getElementById('result').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

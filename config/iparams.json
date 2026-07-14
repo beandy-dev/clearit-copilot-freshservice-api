@@ -1,0 +1,9 @@
+{
+  "backend_url": {
+    "display_name": "URL do Backend ClearIT Copilot",
+    "description": "Endereço do servidor backend em produção",
+    "type": "text",
+    "required": true,
+    "default_value": "https://clearit-copilot.onrender.com"
+  }
+}
