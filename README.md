@@ -199,6 +199,3 @@ Analista pode: Regerar | Buscar na web | Chat | Feedback
 
 ---
 
-## Licença
-
-MIT
