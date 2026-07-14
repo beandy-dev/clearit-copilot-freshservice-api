@@ -168,6 +168,25 @@
       }
 
       html += `<div class="confidence"><div class="conf-bar"><div class="conf-fill" style="width:${confidence}%"></div></div><span class="conf-label">${confidence}%</span></div>`;
+      
+      // Exibir web references automáticas (lowConfidence)
+      if (data.lowConfidence && data.webReferences && data.webReferences.length > 0) {
+        html += `<div class="section" style="margin-top:10px;padding:10px;background:#0c2d3f;border:1px solid #155e75;border-radius:8px;">`;
+        html += `<div class="section-title" style="color:#67e8f9;">🌐 Pesquisa automática (confiança baixa)</div>`;
+        data.webReferences.forEach(r => {
+          html += `<p style="font-size:11px;color:#fff;margin:4px 0;">• <strong>${r.title}</strong>${r.source ? ' — <em>' + r.source + '</em>' : ''}${r.date ? ' <span style="color:#4ade80;">(' + r.date + ')</span>' : ''}</p>`;
+        });
+        html += `<p style="font-size:9px;color:#94a3b8;margin-top:6px;font-style:italic;">Referências sugeridas pela IA — datas aproximadas</p></div>`;
+      }
+
+      // Botões: Regerar + Buscar na web
+      html += `
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button class="btn" onclick="regenerate()" style="flex:1;background:#1e293b;">🔄 Regerar</button>
+          <button class="btn" id="web-search-btn" onclick="searchWeb()" style="flex:1;background:#1e293b;">🌐 Buscar na web</button>
+        </div>
+        <div id="web-results" style="display:none;"></div>
+      `;
 
       html += `
         <div class="feedback">
@@ -355,6 +374,70 @@
         msgs.innerHTML += `<div class="chat-msg bot">Erro ao conectar com o backend.</div>`;
       }
       msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    async function regenerate() {
+      document.getElementById('result').style.display = 'none';
+      document.getElementById('loading').style.display = 'block';
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/analyze`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ticketId: ticketData ? ticketData.id : null,
+            subject: ticketData ? ticketData.subject : '',
+            description: window._lastQuery || ''
+          })
+        });
+        const data = await res.json();
+        document.getElementById('loading').style.display = 'none';
+        showResult(data, window._lastQuery);
+      } catch (e) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('result').style.display = 'block';
+      }
+    }
+
+    async function searchWeb() {
+      const btn = document.getElementById('web-search-btn');
+      const resultsDiv = document.getElementById('web-results');
+      btn.textContent = '⏳ Pesquisando...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/web-search`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            description: window._lastQuery || '',
+            diagnosis: window._lastData ? window._lastData.diagnosis : ''
+          })
+        });
+        const data = await res.json();
+        if (data.summary) {
+          let compatHtml = '';
+          if (data.compatibility) {
+            const colors = { compativel: '#4ade80', parcialmente_compativel: '#fbbf24', divergente: '#f87171' };
+            const labels = { compativel: '✅ Compatível', parcialmente_compativel: '⚠️ Parcialmente compatível', divergente: '❌ Divergente' };
+            compatHtml = `<div style="border-left:3px solid ${colors[data.compatibility.status] || '#fbbf24'};padding:6px 10px;margin-top:8px;background:rgba(0,0,0,0.2);border-radius:4px;"><strong style="color:${colors[data.compatibility.status] || '#fbbf24'}">${labels[data.compatibility.status] || '⚠️'}</strong><p style="margin-top:4px;font-size:11px;color:#fff;">${data.compatibility.analysis}</p></div>`;
+          }
+          resultsDiv.innerHTML = `
+            <div style="margin-top:10px;border:1px solid #155e75;border-radius:8px;overflow:hidden;background:#0c2d3f;">
+              <div style="padding:8px 12px;font-size:12px;font-weight:700;color:#fff;background:#164e63;">🌐 Pesquisa na internet</div>
+              <div style="padding:10px 12px;font-size:12px;line-height:1.7;color:#fff;">${data.summary.replace(/\n/g,'<br>')}</div>
+              <div style="padding:6px 12px 8px;border-top:1px solid #1e3a4f;font-size:10px;color:#fff;">Relevância: ${data.confidence}% · Fontes: ${(data.sources||[]).join(' · ')}</div>
+              ${compatHtml}
+            </div>`;
+          resultsDiv.style.display = 'block';
+          btn.style.display = 'none';
+        } else {
+          btn.textContent = '🌐 Nenhum resultado';
+          btn.disabled = false;
+        }
+      } catch (e) {
+        btn.textContent = '⚠️ Erro';
+        setTimeout(() => { btn.textContent = '🌐 Buscar na web'; btn.disabled = false; }, 2000);
+      }
     }
 
     function reset() {
