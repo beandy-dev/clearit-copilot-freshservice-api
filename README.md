@@ -162,6 +162,18 @@ Para múltiplas posições, adicione no `modules.service_ticket.location`.
 
 ---
 
+## Uso Standalone (sem FreshService)
+
+O arquivo `app/index.html` pode ser aberto diretamente no navegador, sem necessidade do FreshService. Nesse modo:
+
+- O pré-preenchimento automático do ticket não funciona (o analista digita manualmente)
+- A URL do backend usa o valor default hardcoded (`https://clearit-copilot.onrender.com`)
+- Todas as funcionalidades (diagnóstico, busca web, chat, feedback, regerar) funcionam normalmente
+
+Isso permite usar o Copilot como formulário web independente — útil para testes, demonstrações ou integração com outras plataformas que não sejam FreshService.
+
+---
+
 ## Fluxo do Usuário
 
 ```
