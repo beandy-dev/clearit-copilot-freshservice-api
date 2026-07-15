@@ -69,7 +69,10 @@
 <body>
   <div class="header">
     <h1><i>🤖</i> ClearIT Copilot</h1>
-    <span class="badge">AI</span>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <a href="" id="manual-link" target="_blank" style="padding:3px 8px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;font-size:9px;font-weight:600;color:#1d4ed8;text-decoration:none;">📖 Manual</a>
+      <span class="badge">AI</span>
+    </div>
   </div>
 
   <div id="input-section" class="input-section">
@@ -92,6 +95,9 @@
     let ticketData = null;
     
     document.addEventListener('DOMContentLoaded', function() {
+      // Link do manual aponta pro backend
+      document.getElementById('manual-link').href = BACKEND_URL + '/manual.html';
+
       if (window.app) {
         app.initialized().then(function(client) {
           // Carregar URL do backend via installation parameters
@@ -445,13 +451,6 @@
       document.getElementById('input-section').style.display = 'block';
       document.getElementById('result').style.display = 'none';
     }
-  </script>
-  <div style="margin-top:16px;padding-top:12px;border-top:1px solid #e2e8f0;text-align:center;">
-    <a href="" id="manual-link" target="_blank" style="font-size:10px;color:#64748b;text-decoration:none;">📖 Manual do Sistema</a>
-  </div>
-  <script>
-    // Link do manual aponta pro backend
-    document.getElementById('manual-link').href = BACKEND_URL + '/manual.html';
   </script>
 </body>
 </html>
