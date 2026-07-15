@@ -181,6 +181,8 @@ O widget é um frontend leve (HTML + CSS + JS) que consome uma API REST. Isso si
 
 A inteligência está no backend (API REST), não no widget. Se a empresa trocar de plataforma de tickets, o backend permanece o mesmo — só o frontend de integração muda. Essa é uma decisão de arquitetura intencional (ver [docs/decisoes-tecnicas.md](https://github.com/beandy-dev/sherlock-clearit-copilot/blob/main/docs/decisoes-tecnicas.md)).
 
+> **Importante:** Cada plataforma tem seus próprios requisitos de SDK, empacotamento e publicação. É necessário seguir as exigências da plataforma alvo (formato de manifesto, autenticação, método de deploy) para adaptar o Copilot a ela. O código do frontend precisará de ajustes para usar o SDK específico de cada plataforma (ex: pré-preenchimento de dados do ticket, autenticação do usuário).
+
 ---
 
 ## Fluxo do Usuário
