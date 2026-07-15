@@ -14,7 +14,7 @@ Widget que renderiza na **sidebar direita** de qualquer ticket no FreshService. 
 
 ## Funcionalidades
 
-- **Pré-preenchimento automático** — Captura subject e description do ticket aberto via FreshService SDK
+- **Pré-preenchimento automático** — Captura dados do ticket via FreshService SDK. Na prática, preenche com o título (subject) do chamado. A POC usa a descrição completa.
 - **Diagnóstico com IA** — Chama o backend (busca semântica + Gemini) e exibe resultado na sidebar
 - **Busca na web** — Botão para pesquisar documentação externa quando confiança é baixa
 - **Análise de compatibilidade** — Compara diagnóstico interno com fontes externas
