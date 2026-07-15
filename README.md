@@ -170,7 +170,16 @@ O arquivo `app/index.html` pode ser aberto diretamente no navegador, sem necessi
 - A URL do backend usa o valor default hardcoded (`https://clearit-copilot.onrender.com`)
 - Todas as funcionalidades (diagnóstico, busca web, chat, feedback, regerar) funcionam normalmente
 
-Isso permite usar o Copilot como formulário web independente — útil para testes, demonstrações ou integração com outras plataformas que não sejam FreshService.
+### Independência de plataforma
+
+O widget é um frontend leve (HTML + CSS + JS) que consome uma API REST. Isso significa que, com adaptações mínimas, pode ser integrado a **qualquer plataforma de tickets**:
+
+- **ServiceNow** — embedded como UI Page ou widget no Service Portal
+- **Jira Service Management** — como Forge app ou Connect app na sidebar
+- **Zendesk** — como app na sidebar via Zendesk Apps Framework
+- **Qualquer ITSM** — basta embutir o HTML em iframe ou adaptar o SDK de pré-preenchimento
+
+A inteligência está no backend (API REST), não no widget. Se a empresa trocar de plataforma de tickets, o backend permanece o mesmo — só o frontend de integração muda. Essa é uma decisão de arquitetura intencional (ver [docs/decisoes-tecnicas.md](https://github.com/beandy-dev/sherlock-clearit-copilot/blob/main/docs/decisoes-tecnicas.md)).
 
 ---
 
