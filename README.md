@@ -187,6 +187,8 @@ Analista pode: Regerar | Buscar na web | Chat | Feedback
 | [sherlock-clearit-copilot](https://github.com/beandy-dev/sherlock-clearit-copilot) | POC completa (frontend + backend + docs) |
 | [clearit-copilot-backend](https://github.com/beandy-dev/clearit-copilot-backend) | Backend em produção (Render) |
 
+📖 **Manual do Sistema:** [https://clearit-copilot.onrender.com/manual.html](https://clearit-copilot.onrender.com/manual.html)
+
 ---
 
 ## Equipe
