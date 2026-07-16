@@ -244,7 +244,7 @@ Analista pode: Regerar | Buscar na web | Chat | Feedback
 
 | Membro | Frente |
 |--------|--------|
-| Beatriz Andrade Lourenço | Tecnologia e Produto |
+| [Beatriz Andrade Lourenço](https://github.com/beandy-dev) | Tecnologia, Produto e Negócios |
 | [Davi da Paz Mota](https://github.com/davidapaz05) | Tecnologia e Produto |
 | [Maria Eduarda Ferreira Santos](https://github.com/dudazfd) | Tecnologia e Produto |
 | [Maria Eloisa Gomes da Conceição](https://github.com/mariaeloisa69) | Negócios e Estratégia |
