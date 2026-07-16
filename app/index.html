@@ -125,6 +125,8 @@
       document.getElementById('result').style.display = 'none';
 
       try {
+        const ctrl = new AbortController();
+        setTimeout(() => ctrl.abort(), 30000);
         const res = await fetch(`${BACKEND_URL}/api/analyze`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -132,7 +134,8 @@
             ticketId: ticketData ? ticketData.id : null,
             subject: ticketData ? ticketData.subject : '',
             description: query
-          })
+          }),
+          signal: ctrl.signal
         });
 
         const data = await res.json();
@@ -142,7 +145,7 @@
         document.getElementById('loading').style.display = 'none';
         document.getElementById('result').style.display = 'block';
         document.getElementById('result').innerHTML = `
-          <div class="error">❌ Não foi possível conectar ao backend.<br>Verifique se o servidor está rodando em ${BACKEND_URL}</div>
+          <div class="error">${e.name === 'AbortError' ? '⚠️ Tempo esgotado — o servidor demorou para responder.' : '❌ Não foi possível conectar ao backend.'}<br>Tente novamente em alguns segundos.</div>
           <button class="btn" onclick="reset()" style="margin-top:8px;">← Tentar novamente</button>
         `;
       }
@@ -387,6 +390,8 @@
       document.getElementById('result').style.display = 'none';
       document.getElementById('loading').style.display = 'block';
       try {
+        const ctrl = new AbortController();
+        setTimeout(() => ctrl.abort(), 30000);
         const res = await fetch(`${BACKEND_URL}/api/analyze`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -394,7 +399,8 @@
             ticketId: ticketData ? ticketData.id : null,
             subject: ticketData ? ticketData.subject : '',
             description: window._lastQuery || ''
-          })
+          }),
+          signal: ctrl.signal
         });
         const data = await res.json();
         document.getElementById('loading').style.display = 'none';
@@ -402,6 +408,7 @@
       } catch (e) {
         document.getElementById('loading').style.display = 'none';
         document.getElementById('result').style.display = 'block';
+        document.getElementById('result').innerHTML = `<div class="error">⚠️ ${e.name === 'AbortError' ? 'Tempo esgotado — tente novamente.' : 'Erro ao conectar.'}</div><button class="btn" onclick="reset()" style="margin-top:8px;">← Nova consulta</button>`;
       }
     }
 
