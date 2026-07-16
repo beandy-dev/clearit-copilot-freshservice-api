@@ -236,6 +236,8 @@ Analista pode: Regerar | Buscar na web | Chat | Feedback
 
 📖 **Manual do Sistema:** [https://clearit-copilot.onrender.com/manual.html](https://clearit-copilot.onrender.com/manual.html)
 
+> Se o manual demorar para carregar (~30s), é o servidor no Render acordando (free tier). Aguarde e recarregue.
+
 ---
 
 ## Equipe
