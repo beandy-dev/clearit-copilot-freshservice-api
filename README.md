@@ -227,6 +227,13 @@ Analista pode: Regerar | Buscar na web | Chat | Feedback
 
 ---
 
+## Demos
+
+- 🎬 [Demo POC (v1.0.0)](https://youtu.be/OzFgao1UyYg)
+- 🎬 [Demo Widget FreshService (v1.0.0)](https://youtu.be/pO-qKFHeRY4)
+
+---
+
 ## Repositórios Relacionados
 
 | Repo | Descrição |
