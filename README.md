@@ -78,6 +78,30 @@ fdk -u run --app-dir .
 6. Na instalação, configure a **URL do Backend**
 7. Instale e teste num ticket
 
+> **Importante:** Após subir, o app aparece em "In Development". Para funcionar na sidebar do ticket, é necessário **publicar** (Promote to Live) no Developer Portal.
+
+### Atualizar para nova versão
+
+1. No **Developer Portal**, clique no card do app
+2. Em **Code File**, clique **"Add new version"**
+3. Upload o novo zip
+4. Clique **"Save and test"**
+5. Em **Manage Apps → In Development**, habilite o toggle e clique **"Update"**
+6. Teste — se ok, volte no Developer Portal e clique **"Promote to Live"**
+
+### Desinstalar
+
+1. Acesse `https://SEU-DOMINIO.freshservice.com/a/admin/apps`
+2. Aba **Custom Apps** (ou **In Development**)
+3. Encontre o app → **Settings** → **Uninstall App**
+
+### Deletar
+
+1. Primeiro desinstale (passo acima)
+2. No **Developer Portal** → card do app → deletar
+
+> Não é possível deletar um app com instalações ativas. Desinstale primeiro.
+
 ---
 
 ## Configuração (Parâmetros de Instalação)
